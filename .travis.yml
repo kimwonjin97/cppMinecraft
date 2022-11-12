@@ -11,11 +11,12 @@ install:
 
 jobs:
   include:
-#    - os: osx
-#      compiler: gcc
-#      osx_image: xcode11.2    # includes gcc-9 by default
-#      env:
+    - os: osx
+      compiler: gcc
+      osx_image: xcode11.2    # includes gcc-9 by default
+      env:
 #        - GCC_VER="9"
+        - MATRIX_EVAL=""
 #        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
     - os: osx
       compiler: clang
@@ -32,8 +33,9 @@ jobs:
       dist: bionic
       compiler: clang
       env:
-        - MATRIX_EVAL="CC=clang && CXX=clang++"
-      addons: { apt: { packages: ['doxygen', 'python3-pip'] } }
+        - MATRIX_EVAL=""
+#        - MATRIX_EVAL="CC=clang && CXX=clang++"
+#      addons: { apt: { packages: ['doxygen', 'python3-pip'] } }
   addons:
     apt:
       packages:
