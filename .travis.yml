@@ -10,6 +10,10 @@ install:
   - conan --version
   -
 addons:
+  sonarcloud:
+    organization: "kimwonjin97"
+    token:
+      secure: "86819627d326ed9b6be6a499860102112e1405c6" # encrypted value of your token
   apt:
     packages: lcov
   homebrew:
@@ -85,8 +89,14 @@ before_script:
 
 script:
   - cmake -S . -B ./build -D ENABLE_COVERAGE:BOOL=ON ../
-  - cmake --build ./build -- -j2
+#  - cmake --build ./build -- -j2
+  # Wraps the compilation with the Build Wrapper to generate configuration (used
+  # later by the SonarScanner) into the "bw-output" folder
+  - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build ./build -- -j2
   - cd build && ctest -j2
+  # And finally run the SonarCloud analysis - read the "sonar-project.properties-project.properties"
+  # file to see the specific configuration
+  - sonar-project.properties-scanner -Dsonar.cfamily.build-wrapper-output=bw-output
 
 after_success:
   # Create lcov report
