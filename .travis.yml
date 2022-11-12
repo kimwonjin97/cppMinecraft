@@ -14,7 +14,7 @@ addons:
   sonarcloud:
     organization: "kimwonjin97"
     token:
-      secure: "86819627d326ed9b6be6a499860102112e1405c6" # encrypted value of your token
+      secure: "868775131add7bcb068d9bdd1eeb2a1202003fa6" # encrypted value of your token
   homebrew:
     packages: lcov
 
