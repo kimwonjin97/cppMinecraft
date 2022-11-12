@@ -8,7 +8,7 @@ install:
 
   # Fail if we can't run Conan.
   - conan --version
-  - conan install .. -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
+  - conan install .. -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True -s compiler='other'
 
 jobs:
   include:
