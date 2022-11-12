@@ -24,44 +24,44 @@ jobs:
     - os: osx
       compiler: gcc
       osx_image: xcode11.2    # includes gcc-9 by default
-      addons: {
-        homebrew:{ packages:
-                     ['doxygen',
-                      'python3-pip',
-                      'gcc9',
-                      'cppcheck',
-                      'ccache']
-          }
-      }
+#      addons: {
+#        homebrew:{ packages:
+#                     ['doxygen',
+#                      'python3-pip',
+#                      'gcc9',
+#                      'cppcheck',
+#                      'ccache']
+#          }
+#      }
       env:
         - GCC_VER="9"
         - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
     - os: osx
       compiler: clang
       osx_image: xcode11.2
-      addons: {
-        homebrew: { packages:
-                      [ 'doxygen',
-                        'python3-pip',
-                        'gcc9',
-                        'cppcheck',
-                        'ccache' ]
-        }
-      }
+#      addons: {
+#        homebrew: { packages:
+#                      [ 'doxygen',
+#                        'python3-pip',
+#                        'gcc9',
+#                        'cppcheck',
+#                        'ccache' ]
+#        }
+#      }
       env:
         - MATRIX_EVAL=""
     - os: linux
       dist: bionic
       compiler: gcc
-      addons: {
-        apt: { packages:
-                      [ 'doxygen',
-                        'python3-pip',
-                        'gcc9',
-                        'cppcheck',
-                        'ccache' ]
-        }
-      }
+#      addons: {
+#        apt: { packages:
+#                      [ 'doxygen',
+#                        'python3-pip',
+#                        'gcc9',
+#                        'cppcheck',
+#                        'ccache' ]
+#        }
+#      }
       env:
         - GCC_VER="9"
         - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
@@ -72,15 +72,15 @@ jobs:
       compiler: clang
       env:
         - MATRIX_EVAL="CC=clang && CXX=clang++"
-      addons: {
-        api: { packages:
-                      [ 'doxygen',
-                        'python3-pip',
-                        'gcc9',
-                        'cppcheck',
-                        'ccache' ]
-        }
-      }
+#      addons: {
+#        api: { packages:
+#                      [ 'doxygen',
+#                        'python3-pip',
+#                        'gcc9',
+#                        'cppcheck',
+#                        'ccache' ]
+#        }
+#      }
 
 
 
