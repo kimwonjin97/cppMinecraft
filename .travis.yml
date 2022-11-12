@@ -8,6 +8,7 @@ install:
 
   # Fail if we can't run Conan.
   - conan --version
+  - conan create ... -c tools.system.package_manager:mode=install
 
 jobs:
   include:
