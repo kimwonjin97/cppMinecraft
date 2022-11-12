@@ -1,6 +1,6 @@
 language: cpp
-
 install:
+  - travis encrypt --pro 065cb4c31bbf81cf0cdc75af564d7226add4e7d5
   # Pip cannot install Conan without these upgrades
   - python3 -m pip install --upgrade pip setuptools
   # Install Conan and CMake >= 3.15
@@ -63,7 +63,6 @@ before_script:
 
 script:
   - cmake -S . -B ./build -D ENABLE_COVERAGE:BOOL=ON ../
-#  - cmake --build ./build -- -j2
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarScanner) into the "bw-output" folder
   - build-wrapper-macosx-x86 --out-dir "$BUILD_WRAPPER_OUT_DIR" cmake --build ./build -- -j2
