@@ -8,7 +8,7 @@ install:
 
   # Fail if we can't run Conan.
   - conan --version
-  -
+
 addons:
   sonarcloud:
     organization: "kimwonjin97"
