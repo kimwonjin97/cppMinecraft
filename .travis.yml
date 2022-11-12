@@ -63,7 +63,7 @@ jobs:
       env:
         - MATRIX_EVAL="CC=clang && CXX=clang++"
       addons: {
-        homebrew: { packages:
+        api: { packages:
                       [ 'doxygen',
                         'python3-pip',
                         'gcc9',
