@@ -25,8 +25,6 @@ jobs:
       osx_image: xcode11.2
       env:
         - MATRIX_EVAL=""
-env:
-  - BUILD_WRAPPER_OUT_DIR=build_wrapper_output_folder
 
 before_script:
   - eval "${MATRIX_EVAL}"
@@ -37,11 +35,11 @@ script:
   - cmake -S . -B ./build -D ENABLE_COVERAGE:BOOL=ON ../
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarScanner) into the "bw-output" folder
-  - build-wrapper-macosx-x86 --out-dir "$BUILD_WRAPPER_OUT_DIR" cmake --build ./build -- -j2
+  - build-wrapper-macosx-x86 --out-dir build_wrapper_output_folder cmake --build ./build -- -j2
   - cd build && ctest -j2
   # And finally run the SonarCloud analysis - read the "sonar-project.properties-project.properties"
   # file to see the specific configuration
-  - sonar-scanner --define sonar.cfamily.cache.enabled=true --define sonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily --define sonar.cfamily.threads=${NUMBER_OF_PROCESSORS} --define sonar.cfamily.build-wrapper-output="$BUILD_WRAPPER_OUT_DIR"
+  - sonar-scanner --define sonar.cfamily.cache.enabled=true --define sonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily --define sonar.cfamily.threads=${NUMBER_OF_PROCESSORS} --define sonar.cfamily.build-wrapper-output=build_wrapper_output_folder
 
 cache:
   directories:
