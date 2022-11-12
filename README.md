@@ -3,4 +3,4 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
-This project is minecraft clone using opengl and 
+This project is minecraft clone using cpp and opengl
