@@ -1,0 +1,116 @@
+language: cpp
+
+install:
+  # Pip cannot install Conan without these upgrades
+  - python3 -m pip install --upgrade pip setuptools
+  # Install Conan and CMake >= 3.15
+  - python3 -m pip install conan cmake
+
+  # Fail if we can't run Conan.
+  - conan --version
+  -
+addons:
+  sonarcloud:
+    organization: "kimwonjin97"
+    token:
+      secure: "86819627d326ed9b6be6a499860102112e1405c6" # encrypted value of your token
+  apt:
+    packages: lcov
+  homebrew:
+    packages: lcov
+
+jobs:
+  include:
+    - os: osx
+      compiler: gcc
+      osx_image: xcode11.2    # includes gcc-9 by default
+      addons: {
+        homebrew:{ packages:
+                     ['doxygen',
+                      'python3-pip',
+                      'gcc9',
+                      'cppcheck',
+                      'ccache']
+          }
+      }
+      env:
+        - GCC_VER="9"
+        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
+    - os: osx
+      compiler: clang
+      osx_image: xcode11.2
+      addons: {
+        homebrew: { packages:
+                      [ 'doxygen',
+                        'python3-pip',
+                        'gcc9',
+                        'cppcheck',
+                        'ccache' ]
+        }
+      }
+      env:
+        - MATRIX_EVAL=""
+    - os: linux
+      dist: bionic
+      compiler: gcc
+      addons: {
+        apt: { packages:
+                      [ 'doxygen',
+                        'python3-pip',
+                        'gcc9',
+                        'cppcheck',
+                        'ccache' ]
+        }
+      }
+      env:
+        - GCC_VER="9"
+        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
+      after_script:
+        - bash <(curl -s https://codecov.io/bash) -x /usr/bin/gcov-${GCC_VER}
+    - os: linux
+      dist: bionic
+      compiler: clang
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+      addons: {
+        api: { packages:
+                      [ 'doxygen',
+                        'python3-pip',
+                        'gcc9',
+                        'cppcheck',
+                        'ccache' ]
+        }
+      }
+
+
+
+before_script:
+  - eval "${MATRIX_EVAL}"
+
+script:
+  - cmake -S . -B ./build -D ENABLE_COVERAGE:BOOL=ON ../
+#  - cmake --build ./build -- -j2
+  # Wraps the compilation with the Build Wrapper to generate configuration (used
+  # later by the SonarScanner) into the "bw-output" folder
+  - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build ./build -- -j2
+  - cd build && ctest -j2
+  # And finally run the SonarCloud analysis - read the "sonar-project.properties-project.properties"
+  # file to see the specific configuration
+  - sonar-project.properties-scanner -Dsonar.cfamily.build-wrapper-output=bw-output
+
+after_success:
+  # Create lcov report
+  # capture coverage info
+  - lcov --directory . --capture --output-file coverage.info
+  # filter out system and extra files.
+  # To also not include test code in coverage add them with full path to the patterns: '*/tests/*'
+  - lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+  # output coverage data for debugging (optional)
+  - lcov --list coverage.info
+  # Uploading to CodeCov
+  # '-f' specifies file(s) to use and disables manual coverage gathering and file search which has already been done above
+  - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+
+
+
+
