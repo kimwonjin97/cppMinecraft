@@ -14,48 +14,64 @@ jobs:
     - os: osx
       compiler: gcc
       osx_image: xcode11.2    # includes gcc-9 by default
+      addons: {
+        homebrew:{ packages:
+                     ['doxygen',
+                      'python3-pip',
+                      'gcc9',
+                      'cppcheck',
+                      'ccache']
+          }
+      }
       env:
-#        - GCC_VER="9"
-        - MATRIX_EVAL=""
-#        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
+        - GCC_VER="9"
+        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
     - os: osx
       compiler: clang
       osx_image: xcode11.2
+      addons: {
+        homebrew: { packages:
+                      [ 'doxygen',
+                        'python3-pip',
+                        'gcc9',
+                        'cppcheck',
+                        'ccache' ]
+        }
+      }
       env:
         - MATRIX_EVAL=""
     - os: linux
       dist: bionic
       compiler: gcc
+      addons: {
+        apt: { packages:
+                      [ 'doxygen',
+                        'python3-pip',
+                        'gcc9',
+                        'cppcheck',
+                        'ccache' ]
+        }
+      }
       env:
-        - MATRIX_EVAL=""
-#        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
+        - GCC_VER="9"
+        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
+      after_script:
+        - bash <(curl -s https://codecov.io/bash) -x /usr/bin/gcov-${GCC_VER}
     - os: linux
       dist: bionic
       compiler: clang
       env:
-        - MATRIX_EVAL=""
-#        - MATRIX_EVAL="CC=clang && CXX=clang++"
-#      addons: { apt: { packages: ['doxygen', 'python3-pip'] } }
-  addons:
-    apt:
-      packages:
-        # I couldn't get ${GCC_VER} in here successfully
-        - gcc-9
-        - g++-9
-        - doxygen
-        - cppcheck
-        - ccache
-        - python3-pip
-    homebrew:
-      packages:
-        - gcc-9
-        - g++-9
-        - doxygen
-        - cppcheck
-        - ccache
-        - python3-pip
-    after_script:
-      - bash <(curl -s https://codecov.io/bash) -x /usr/bin/gcov-${GCC_VER}
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+      addons: {
+        homebrew: { packages:
+                      [ 'doxygen',
+                        'python3-pip',
+                        'gcc9',
+                        'cppcheck',
+                        'ccache' ]
+        }
+      }
+
 
 
 before_script:
