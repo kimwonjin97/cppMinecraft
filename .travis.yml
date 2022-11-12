@@ -1,6 +1,7 @@
 language: cpp
+sudo: false
+
 install:
-  - travis encrypt --pro 065cb4c31bbf81cf0cdc75af564d7226add4e7d5
   # Pip cannot install Conan without these upgrades
   - python3 -m pip install --upgrade pip setuptools
   # Install Conan and CMake >= 3.15
@@ -19,42 +20,11 @@ addons:
 
 jobs:
   include:
-#    - os: osx
-#      compiler: gcc
-#      osx_image: xcode11.2    # includes gcc-9 by default
-#      env:
-#        - GCC_VER="9"
-#        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
     - os: osx
       compiler: clang
       osx_image: xcode11.2
       env:
         - MATRIX_EVAL=""
-#    - os: linux
-#      dist: bionic
-#      compiler: gcc
-#      env:
-#        - GCC_VER="9"
-#        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
-#      addons:
-#        apt:
-#          sources:
-#            - ubuntu-toolchain-r-test
-#          packages:
-#            # I couldn't get ${GCC_VER} in here successfully
-#            - gcc-9
-#            - g++-9
-#            - doxygen
-#            - python3-pip
-#      after_script:
-#        - bash <(curl -s https://codecov.io/bash) -x /usr/bin/gcov-${GCC_VER}
-#    - os: linux
-#      dist: bionic
-#      compiler: clang
-#      env:
-#        - MATRIX_EVAL="CC=clang && CXX=clang++"
-#      addons: { apt: { packages: ['doxygen', 'python3-pip','cppcheck','ccache'] } }
-
 env:
   - BUILD_WRAPPER_OUT_DIR=build_wrapper_output_folder
 
@@ -62,6 +32,8 @@ before_script:
   - eval "${MATRIX_EVAL}"
 
 script:
+  - NUMBER_OF_PROCESSORS=$(nproc --all)
+  - mkdir build
   - cmake -S . -B ./build -D ENABLE_COVERAGE:BOOL=ON ../
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarScanner) into the "bw-output" folder
@@ -70,6 +42,13 @@ script:
   # And finally run the SonarCloud analysis - read the "sonar-project.properties-project.properties"
   # file to see the specific configuration
   - sonar-scanner --define sonar.cfamily.cache.enabled=true --define sonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily --define sonar.cfamily.threads=${NUMBER_OF_PROCESSORS} --define sonar.cfamily.build-wrapper-output="$BUILD_WRAPPER_OUT_DIR"
+
+cache:
+  directories:
+    - $HOME/.sonar/cache
+    # This contains the CFamily cache. According to https://docs.travis-ci.com/user/caching/#pull-request-builds-and-caches,
+    # for a PR, it will use the cache of the target branch if the branch of the PR does not already have its cache.
+    - $HOME/.cfamily
 
 after_success:
   # Create lcov report
