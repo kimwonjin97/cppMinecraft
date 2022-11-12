@@ -14,8 +14,6 @@ addons:
     organization: "kimwonjin97"
     token:
       secure: "86819627d326ed9b6be6a499860102112e1405c6" # encrypted value of your token
-  apt:
-    packages: lcov
   homebrew:
     packages: lcov
 
@@ -57,7 +55,8 @@ jobs:
 #        - MATRIX_EVAL="CC=clang && CXX=clang++"
 #      addons: { apt: { packages: ['doxygen', 'python3-pip','cppcheck','ccache'] } }
 
-
+env:
+  - BUILD_WRAPPER_OUT_DIR=build_wrapper_output_folder
 
 before_script:
   - eval "${MATRIX_EVAL}"
@@ -67,11 +66,11 @@ script:
 #  - cmake --build ./build -- -j2
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarScanner) into the "bw-output" folder
-  - build-wrapper-macosx-x86 --out-dir bw-output cmake --build ./build -- -j2
+  - build-wrapper-macosx-x86 --out-dir "$BUILD_WRAPPER_OUT_DIR" cmake --build ./build -- -j2
   - cd build && ctest -j2
   # And finally run the SonarCloud analysis - read the "sonar-project.properties-project.properties"
   # file to see the specific configuration
-  - sonar-project.properties-scanner -Dsonar.cfamily.build-wrapper-output=bw-output
+  - sonar-scanner --define sonar.cfamily.cache.enabled=true --define sonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily --define sonar.cfamily.threads=${NUMBER_OF_PROCESSORS} --define sonar.cfamily.build-wrapper-output="$BUILD_WRAPPER_OUT_DIR"
 
 after_success:
   # Create lcov report
