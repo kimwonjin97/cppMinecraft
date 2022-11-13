@@ -6,7 +6,8 @@ install:
   - python3 -m pip install --upgrade pip setuptools
   # Install Conan and CMake >= 3.15
   - python3 -m pip install conan cmake
-
+  - gem install travis
+  - travis encrypt --pro "868775131add7bcb068d9bdd1eeb2a1202003fa6"
   # Fail if we can't run Conan.
   - conan --version
 
