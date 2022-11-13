@@ -36,6 +36,23 @@ jobs:
           curl -sSLo $HOME/.sonar/build-wrapper-macosx-x86.zip ${{ env.BUILD_WRAPPER_DOWNLOAD_URL }}
           unzip -o $HOME/.sonar/build-wrapper-macosx-x86.zip -d $HOME/.sonar/
           echo "$HOME/.sonar/build-wrapper-macosx-x86" >> $GITHUB_PATH
+      - name: Setup Cpp
+          uses: aminya/setup-cpp@v1
+          with:
+            compiler: ${{ matrix.compiler }}
+            vcvarsall: ${{ contains(matrix.os, 'windows' )}}
+
+            cmake: true
+            ninja: true
+            conan: true
+            vcpkg: false
+            ccache: true
+            clangtidy: false
+
+            cppcheck: false
+
+            gcovr: false
+            opencppcoverage: false
       - name: Run build-wrapper
         run: |
           mkdir build
