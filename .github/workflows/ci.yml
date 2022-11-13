@@ -50,8 +50,8 @@ jobs:
           # mingw is determined by this author to be too buggy to support
           - os: macos-11
             compiler: gcc-11
-          - os: ubuntu-20.04
-            compiler: llvm-13.0.0
+#          - os: ubuntu-20.04
+#            compiler: llvm-13.0.0
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
