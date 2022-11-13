@@ -101,13 +101,13 @@ jobs:
           # Prefix the list here with "+" to use these queries and those in the config file.
           # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
-      - name: Install packages
-          run: |
-            sudo apt-get update
-            sudo apt-get install -yq xorg-dev libglu1-mesa-dev
-            sudo apt-get install -yq libxrandr-dev libxi-dev libxxf86vm-dev libxinerama-dev libxcursor-dev
-            sudo apt-get install -yq libopenal-dev libvorbis-dev libflac-dev libudev-dev
-            sudo apt-get install -yq gcovr ggcov lcov curl
+#      - name: Install packages
+#          run: |
+#            sudo apt-get update
+#            sudo apt-get install -yq xorg-dev libglu1-mesa-dev
+#            sudo apt-get install -yq libxrandr-dev libxi-dev libxxf86vm-dev libxinerama-dev libxcursor-dev
+#            sudo apt-get install -yq libopenal-dev libvorbis-dev libflac-dev libudev-dev
+#            sudo apt-get install -yq gcovr ggcov lcov curl
 
 
       - name: Build
