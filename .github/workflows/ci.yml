@@ -66,30 +66,30 @@ jobs:
             developer_mode: OFF
             package_generator: TBZ2
 
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Debug
-            developer_mode: On
+#          - os: windows-2022
+#            compiler: msvc
+#            generator: "Visual Studio 17 2022"
+#            build_type: Debug
+#            developer_mode: On
 
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Release
-            developer_mode: On
-
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Debug
-            developer_mode: OFF
-
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Release
-            developer_mode: OFF
-            package_generator: ZIP
+#          - os: windows-2022
+#            compiler: msvc
+#            generator: "Visual Studio 17 2022"
+#            build_type: Release
+#            developer_mode: On
+#
+#          - os: windows-2022
+#            compiler: msvc
+#            generator: "Visual Studio 17 2022"
+#            build_type: Debug
+#            developer_mode: OFF
+#
+#          - os: windows-2022
+#            compiler: msvc
+#            generator: "Visual Studio 17 2022"
+#            build_type: Release
+#            developer_mode: OFF
+#            package_generator: ZIP
 
 
     steps:
@@ -176,7 +176,7 @@ jobs:
       - name: Publish to codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+#          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           flags: ${{ runner.os }}
           name: ${{ runner.os }}-coverage
           files: ./build/coverage.xml
