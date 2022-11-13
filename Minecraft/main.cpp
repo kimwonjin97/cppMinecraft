@@ -7,27 +7,28 @@
 //#include "glm/gtc/matrix_transform.hpp"
 //#include <boost>
 
-#define ASSERT(x) if (!(x)) assert(false);
-#define GLCall(x) GLClearError();\
-	x;\
+#define ASSERT(x) \
+	if (!(x)) assert(false);
+#define GLCall(x)   \
+	GLClearError(); \
+	x;              \
 	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
 
 static void GLClearError()
 {
-	while (glGetError() != GL_NO_ERROR);
+	while (glGetError() != GL_NO_ERROR)
+		;
 }
 
 static bool GLLogCall(const char* function, const char* file, int line)
 {
 	while (GLenum error = glGetError())
 	{
-		std::cout << "[OpenGL Error] (" << error << "): " << function <<
-			" " << file << ":" << line << std::endl;
+		std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
 		return false;
 	}
 	return true;
 }
-
 
 static unsigned int CompileShader(unsigned int type, const std::string& source)
 {
@@ -38,7 +39,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
 
 	int result;
 	GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
-	if(result == GL_FALSE)
+	if (result == GL_FALSE)
 	{
 		int length;
 		GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
@@ -70,16 +71,12 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
 	return program;
 }
 
-
-
 int main(void)
 {
 
 	GLFWwindow* window;
 
 	//
-
-
 
 	/* Initialize the library */
 	if (!glfwInit())
@@ -88,8 +85,8 @@ int main(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	//  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);// 3.2+ only
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);          // Required on Mac
 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
@@ -102,14 +99,13 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 	int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-	//  gladLoadGL();
+	//	  gladLoadGL();
 	std::cout << glGetString(GL_VERSION);
 
 	float positions[6] = {
 		-0.5f, -0.5f,
-		0.0f,  0.5f,
-		0.5f, -0.5f
-	};
+		0.0f, 0.5f,
+		0.5f, -0.5f};
 
 	unsigned int vao;
 	GLCall(glGenVertexArrays(1, &vao));
@@ -118,13 +114,12 @@ int main(void)
 	unsigned int buffer = 1;
 	GLCall(glGenBuffers(1, &buffer));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, 6*sizeof(float), positions, GL_STATIC_DRAW));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW));
 
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
 
-
-	std::string vertexShader =R"glsl(
+	std::string vertexShader = R"glsl(
 		#version 330 core
 
 		layout(location = 0) in vec4 position;
@@ -143,7 +138,6 @@ int main(void)
 		"{\n"
 		"	color = vec4(1.0, 0.0, 1.0, 1.0);\n"
 		"}\n";
-
 
 	unsigned int shader = CreateShader(vertexShader, fragmentShader);
 	GLCall(glUseProgram(shader));
