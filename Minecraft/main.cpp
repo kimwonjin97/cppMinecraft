@@ -1,6 +1,6 @@
 //#define GLFW_INCLUDE_NONE
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 //#include <iostream>
 #include <cassert>
 //#include "glm/glm.hpp"
@@ -99,7 +99,7 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 	int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-//	  gladLoadGL();
+	//	  gladLoadGL();
 	std::cout << glGetString(GL_VERSION);
 
 	float positions[6] = {
