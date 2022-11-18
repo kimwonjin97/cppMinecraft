@@ -3,6 +3,7 @@ find_package(spdlog CONFIG)
 find_package(CLI11 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(glm REQUIRED)
 
 add_library(glad ALIAS glad::glad)
 set(TEST_CMAKE test_cmake)
@@ -13,11 +14,11 @@ target_sources(${TEST_CMAKE} PRIVATE test/test.cpp)
 
 #add_library(${TARGET_ARGOS_COMMON} SHARED "")
 
-add_executable(Minecraft main.cpp)
+add_executable(Minecraft src/App.cpp)
 
 target_link_libraries(
         Minecraft
         PUBLIC
-            project_options project_warnings ${TEST_CMAKE}
+            project_options project_warnings
         PRIVATE
-            CLI11::CLI11 fmt::fmt spdlog::spdlog glad glfw)
+            CLI11::CLI11 fmt::fmt spdlog::spdlog glad glfw glm::glm)

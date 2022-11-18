@@ -1,11 +1,7 @@
-//#define GLFW_INCLUDE_NONE
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-//#include <iostream>
 #include <cassert>
-//#include "glm/glm.hpp"
-//#include "glm/gtc/matrix_transform.hpp"
-//#include <boost>
+#include <glm/glm.hpp>
 
 #define ASSERT(x) \
 	if (!(x)) assert(false);
@@ -19,6 +15,11 @@ static void GLClearError()
 	while (glGetError() != GL_NO_ERROR)
 		;
 }
+
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
+
 
 static bool GLLogCall(const char* function, const char* file, int line)
 {
@@ -71,36 +72,74 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
 	return program;
 }
 
+//void processInput(GLFWwindow* window)
+//{
+//	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+//	{
+//		glfwSetWindowShouldClose(window, true);
+//	}
+//}
+
+
+void processInput(GLFWwindow *window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	float cameraSpeed = static_cast<float>(2.5 * deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		cameraPos += cameraSpeed * cameraFront;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cameraPos -= cameraSpeed * cameraFront;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+}
+
+
 int main(void)
 {
 
-	GLFWwindow* window;
-
-	//
-
-	/* Initialize the library */
+    /* Initialize the library */
 	if (!glfwInit())
 		return -1;
 
+    // glfw configuration
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	//  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);// 3.2+ only
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);          // Required on Mac
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true)
+#ifdef __APPLE__
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
 	if (!window)
 	{
+		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
-
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
-	int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-	//	  gladLoadGL();
-	std::cout << glGetString(GL_VERSION);
+
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+
+
+
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		std::cout << "Failed to initialize GLAD" << std::endl;
+		return -1;
+	}
+
 
 	float positions[6] = {
 		-0.5f, -0.5f,
@@ -142,6 +181,10 @@ int main(void)
 	unsigned int shader = CreateShader(vertexShader, fragmentShader);
 	GLCall(glUseProgram(shader));
 
+	int nrAttributes;
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -150,7 +193,7 @@ int main(void)
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
 		GLCall(glDrawArrays(GL_TRIANGLES, 0, 3));
-
+		processInput(window);
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
