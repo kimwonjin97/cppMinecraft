@@ -15,7 +15,7 @@ set(CMAKE_CXX_EXTENSIONS ON)
 
 set(ENABLE_DEVELOPER_MODE True CACHE BOOL "Enable 'developer mode'")
 
-set(WARNINGS_AS_ERRORS_DEVELOPER_DEFAULT False)
+set(WARNINGS_AS_ERRORS_DEVELOPER_DEFAULT True)
 set(ENABLE_CLANG_TIDY_DEVELOPER_DEFAULT False)
 set(ENABLE_PCH_DEVELOPER_DEFAULT True)
 #set(ENABLE_COVERAGE_DEVELOPER_DEFAULT False)
@@ -47,8 +47,10 @@ endif ()
 dynamic_project_options(
         # Note: PCH is disabled by default in developer mode because these headers become
         # globally included and they can mask other errors
+        ENABLE_PCH
         PCH_HEADERS
         <vector>
+        <unordered_map>
         <iostream>
         <string> # This is a list of headers to pre-compile, here are some common ones
         ENABLE_CONAN
