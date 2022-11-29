@@ -47,7 +47,7 @@ jobs:
         generator:
           - "Ninja Multi-Config"
         build_type:
-          - RELEASE
+          - Release
         developer_mode:
           - ON
 
