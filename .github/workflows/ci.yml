@@ -31,12 +31,12 @@ jobs:
       # and your own projects needs
       matrix:
         os:
-          - ubuntu-20.04
+#          - ubuntu-20.04
           - macos-11
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
           - llvm-13.0.0
-          - gcc-11
+#          - gcc-11
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -44,7 +44,7 @@ jobs:
 #          - Debug
         developer_mode:
           - ON
-          - OFF
+#          - OFF
 
         exclude:
           # mingw is determined by this author to be too buggy to support
