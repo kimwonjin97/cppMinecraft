@@ -19,7 +19,7 @@ file(GLOB_RECURSE headers
 file(GLOB_RECURSE sources
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
-
+add_definitions(-D__APPLE__)
 add_executable(Minecraft ${externals} ${sources})
 
 target_link_libraries(
